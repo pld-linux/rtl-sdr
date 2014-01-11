@@ -29,6 +29,7 @@ Development files for rtl-sdr.
 %prep
 %setup -q -n %{name}
 rm -rf src/getopt
+sed -i -e 's#/etc/udev/rules.d#/lib/udev/rules.d#g' CMakeLists.txt
 
 %build
 install -d build
@@ -43,6 +44,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %{__make} -C build install \
 	DESTDIR=$RPM_BUILD_ROOT
+
+sed -i -e 's#MODE:="0666"#MODE:="0660", GROUP="usb"#g' \
+	$RPM_BUILD_ROOT/lib/udev/rules.d/rtl-sdr.rules
 
 # remove static libs
 rm -f $RPM_BUILD_ROOT%{_libdir}/*.a
@@ -59,7 +63,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/rtl_*
 %attr(755,root,root) %{_libdir}/librtlsdr.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/librtlsdr.so.0
-%{_sysconfdir}/udev/rules.d/rtl-sdr.rules
+/lib/udev/rules.d/rtl-sdr.rules
 
 %files devel
 %defattr(644,root,root,755)
