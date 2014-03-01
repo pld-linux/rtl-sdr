@@ -36,6 +36,7 @@ install -d build
 cd build
 %cmake \
 	-DINSTALL_UDEV_RULES=ON \
+	-DLIB_INSTALL_DIR:PATH=%{_libdir} \
 	..
 %{__make}
 
